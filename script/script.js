@@ -7,6 +7,7 @@
 
 
 const ringButtons = document.querySelectorAll(".ring-button");
+let productImageBase = "../assets/";
 
 for (let i = 0; i < ringButtons.length; i++) {
   const ringBtn = ringButtons[i];
@@ -26,11 +27,13 @@ for (let i = 0; i < ringButtons.length; i++) {
 
     const productImage = document.getElementById("product-image");
     // productImage.src = "../assets/gray.png"
-    productImage.src = "../assets/" + color + ".png";
+    productImage.src = productImageBase + color + ".png";
   });
 }
 
-function selectWristSize(size) {
+
+// sizes
+function selectWristSize (size) {
   const sizes = ["S", "M", "L", "XL"];
   for (let i = 0; i < sizes.length; i++) {
     const button = document.getElementById("size-" + sizes[i]);
@@ -46,7 +49,7 @@ function selectWristSize(size) {
 }
 
 
-
+// quantity 
 
 const quantityElements = document.querySelectorAll(".quantity-button");
 for (let btn of quantityElements) {
@@ -62,7 +65,9 @@ for (let btn of quantityElements) {
 }
 
 
+// add to cart
 let cartCount = 0;
+let cartItems = [];
 document.getElementById("add-to-cart").addEventListener("click", function () {
   const quantity = parseInt(document.getElementById("quantity").innerText);
 
@@ -70,9 +75,61 @@ document.getElementById("add-to-cart").addEventListener("click", function () {
     document.getElementById("checkout-container").classList.remove("hidden");
     cartCount = cartCount + quantity;
     document.getElementById("cart-count").innerText = cartCount;
+
+
+    const selectedColorButton = document.querySelector("button.border-purple-600.w-6")
+    const selectedColor = selectedColorButton.id.split("-")[0];
+
+    const selectedSizeButton = document.querySelector("button.border-purple-600:not(.w-6)");
+    const selectedSize = selectedSizeButton.innerText.split(" ")[0];
+
+    const selectedPriceButton = document.querySelector("button.border-purple-600:not(.w-6)");
+    const selectedPrice = selectedPriceButton.innerText
+      .split(" ")[1]
+      .split("$")[1];
+    cartItems.push({
+      image: selectedColor + ".png",
+      title: "Classy Modern Smart Watch",
+      color: selectedColor,
+      size: selectedSize,
+      quantity: quantity,
+      price: quantity * parseInt(selectedPrice)
+    });
+
   }
 
   else {
     alert("Please select a quantity....");
   }
+});
+
+
+
+document.getElementById("checkout-btn").addEventListener("click", function () {
+  const cartModal = document.getElementById("cart-modal");
+  const cartContainer = document.getElementById("cart-items")
+
+  for (let i = 0; i < cartItems.length; i++) {
+    const item = cartItems[i];
+    console.log(item);
+    const row = document.createElement("tr")
+    row.classList.add("border-b");
+
+    row.innerHTML = `
+    <td>
+      <div class = "flex items-center space-x-2 py-1">
+        <img class = "h-12 w-12 object-cover rounded-md" src="${productImageBase}${item.image}" alt="">
+        <span class = "font-semibold">${item.title}</span>
+      </div>
+    </td>
+    <td class = "px-4 py-2">${item.color}</td>
+    <td class = "px-4 py-2">${item.size}</td>
+    <td class = "px-4 py-2">${item.quantity}</td>
+    <td class = "px-4 py-2">${item.price}</td>
+    `;
+    cartContainer.appendChild(row);
+  }
+
+
+  cartModal.classList.remove("hidden");
 });
