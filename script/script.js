@@ -109,9 +109,15 @@ document.getElementById("checkout-btn").addEventListener("click", function () {
   const cartModal = document.getElementById("cart-modal");
   const cartContainer = document.getElementById("cart-items")
 
+  let totalQuantity = 0;
+  let totalPrice = 0;
+
   for (let i = 0; i < cartItems.length; i++) {
     const item = cartItems[i];
     console.log(item);
+
+    totalQuantity += item.quantity;
+    totalPrice += item.price;
     const row = document.createElement("tr")
     row.classList.add("border-b");
 
@@ -129,6 +135,17 @@ document.getElementById("checkout-btn").addEventListener("click", function () {
     `;
     cartContainer.appendChild(row);
   }
+  const totalRow = document.createElement("tr")
+
+  totalRow.innerHTML = `
+      <td class = "px-4 py-2 font-semibold">total</td>
+      <td class = "px-4 py-2"></td>
+      <td class = "px-4 py-2"></td>
+      <td class = "px-4 py-2">${totalQuantity}</td>
+      <td class = "px-4 py-2">${totalPrice}</td>
+      `;
+
+      cartContainer.appendChild(totalRow);
 
 
   cartModal.classList.remove("hidden");
